@@ -2,6 +2,12 @@
 ##GO de DEGs a partir do pacote limma, função topTable##
 ###################################################
 
+##Pacotes utilizados##
+  #"clusterProfiler"
+  #"org.Hs.eg.db" 
+  #"dplyr"
+
+
 # Com esta função, o enriquecimento por Gene Ontology é realizado para uma lista
 #de resultados (DEGs a partir do pacote limma).
 # A função separa entre resultados Up e Down, de acordo com os cut-offs de lfc_threshold e
