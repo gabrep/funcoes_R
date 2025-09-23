@@ -16,6 +16,18 @@
 #contendo cada resultado, por exemplo:
 #   list(res.1 = DEGs_dataset_1, res.2 = DEGs_dataset_2)
 
+##Variaveis
+  ##res = dataframe com resultados de expressao
+  ##lfc_threshold = valor de cutoff da expressao
+  ##padj_threshold = valor de cutoff do p-ajustado
+  ##GO = TRUE se executar Gene Ontology
+  ##KEGG = TRUE se executar KEGG
+  ##WIKIPATHWAYS = TRUE se executar WP
+  ##keyType = string informando o estilo de identificador do gene, 'ENTREZID', 'SYMBOL', 'ENSEMBL'
+  ##OrgDb = org.Hs.eg.db para experimentos com humanos
+  ##organismKEGG = identificador de espécie para KEGG, 'hsa' ou 'mmu' 
+  ##organismWP = identificador de espécie para WP, 'Homo sapiens' ou 'Mus musculus'
+  ##ont = seleciar ontologias do GO, 'all', 'bp', 'cc', 'mf'
 
 
 #Parametros da função enrichGO:

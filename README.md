@@ -28,6 +28,15 @@ Este repositório contém scripts de funções criadas para uso pessoal ou em m�
   Exemplo de aplicação para mais de um dataset ao mesmo tempo:  
   lapply(lista_degs_datasets, function(i) {run_enrichGO(res = i})
     
+-**run_GSEA**: function(res, 
+                     genes = 'SYMBOL',
+                     logfc = 'logFC', #
+                     bases = c('HALLMARK', 'KEGG', 'REACTOME', 'WIKIPATHWAYS'))
+    
+  Realiza enriquecimento de Gene Set Analysis de dados de expressao vindos da função topTable do pacote limma.  
+  A função recebe a lista de genes com valor de expressão e gera o rank de genes para utilização no GSEA.  
+  Pode ser escolhido realizar GSEA tradicional com uma das bases disponíveis (Hallmark, KEGG, Reactome ou Wiki Pathways), ou manter mais de uma para utilização de todos os termos em uma única análise
+    
 - **color_dend**: color_dend(exp, grupos, cores_dend)  
   Gera dendograma de distancias euclidianas com personalização de cores para cada grupo.  
 
