@@ -33,14 +33,21 @@
 #Parametros da função enrichGO:
 run_ORA <- function(res,
                        lfc_threshold = 1,
-                       padj_threshold = 0.05,
-                       GO = T,
-                       KEGG = T,
-                       WIKIPATHWAYS = T,
+                       padj_threshold = 0.05, 
+                        enrich=c('GO', 'KEGG', 'WIKIPATHWAYS'),
+                       #GO = T,
+                       #KEGG = T,
+                       #WIKIPATHWAYS = T,
                        keyType = 'ENTREZID',
                        OrgDb = org.Hs.eg.db,
                        organismKEGG = 'hsa', organismWP = 'Homo sapiens',
                        ont = 'all') {
+  
+  if (class(res) == 'DESeqResults') {
+    res <- as.data.frame(res)
+    res$SYMBOL <- rownames(res) 
+    res <- dplyr::rename(res, logFC = log2FoldChange, adj.P.Val = padj)
+  }
   
   #Separar os resultados em Up e Down
   #Genes Up
@@ -57,7 +64,7 @@ run_ORA <- function(res,
   
   #############Enrichment############
   #############GO############
-  if(GO == T) {
+  if('GO' %in% enrich) {
     
     go_up <- NULL
     go_down <- NULL
@@ -81,7 +88,7 @@ run_ORA <- function(res,
   
   
   #############KEGG################
-  if(KEGG == T){
+  if('KEGG' %in% enrich){
     kegg_up <- NULL
     kegg_down <- NULL
     
@@ -100,7 +107,7 @@ run_ORA <- function(res,
 
   
   ############REACTOME############
-  if(WIKIPATHWAYS == T){
+  if('WIKIPATHWAYS' %in% enrich){
     wikipathways_up <- NULL
     wikipathways_down <- NULL
     
@@ -117,7 +124,23 @@ run_ORA <- function(res,
   
   
   #guardar resultados
-  return(list(go_up = go_up, go_down = go_down,
-              kegg_up = kegg_up, kegg_down = kegg_down,
-              wp_up = wikipathways_up, wp_down = wikipathways_down))
+  #return(list(go_up = go_up, go_down = go_down,
+  #            kegg_up = kegg_up, kegg_down = kegg_down,
+  #            wp_up = wikipathways_up, wp_down = wikipathways_down))
+  
+  results <- list()
+  if ('GO' %in% enrich) {
+    results$go_up <- go_up
+    results$go_down <- go_down
+  }
+  if ('KEGG' %in% enrich) {
+    results$kegg_up <- kegg_up
+    results$kegg_down <- kegg_down
+  }
+  if ('WIKIPATHWAYS' %in% enrich) {
+    results$wp_up <- wikipathways_up
+    results$wp_down <- wikipathways_down
+  }
+  return(results)
+  
 }
