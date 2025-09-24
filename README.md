@@ -15,18 +15,16 @@ Este repositório contém scripts de funções criadas para uso pessoal ou em m�
 - **run_ORA**: run_ORA(res,  
                        lfc_threshold = 1,  
                        padj_threshold = 0.05,  
-                       GO = T,  
-                       KEGG = T,  
-                       WIKIPATHWAYS = T,  
+                       enrich=c('GO', 'KEGG', 'WIKIPATHWAYS'),  
                        keyType = 'ENTREZID',  
                        OrgDb = org.Hs.eg.db,  
                        organismKEGG = 'hsa', organismWP = 'Homo sapiens',  
                        ont = 'all')    
 
   
-  Realiza o enriquecimento de Over Representation Analysis de DEGs geradas a partir do pacote limma e selecionadas pela função _topTable_.
-  Pode ser inserido DEGs de diferentes estudos/datasets em uma lista. 
+  Realiza o enriquecimento de Over Representation Analysis de DEGs. São aceitos resutados obtidos por DESeq2 (results(DESeq(dds))) ou limma (topTable(fit2)).
   A função filtra e traz resultados separados entre genes UP e DOWN  
+  Pode ser inserido DEGs de diferentes estudos/datasets em uma lista. 
   Exemplo de aplicação para mais de um dataset ao mesmo tempo:  
   lapply(lista_degs_datasets, function(i) {run_enrichGO(res = i})
   
@@ -36,7 +34,7 @@ Este repositório contém scripts de funções criadas para uso pessoal ou em m�
                      logfc = 'logFC',   
                      bases = c('HALLMARK', 'KEGG', 'REACTOME', 'WIKIPATHWAYS'))  
     
-  Realiza enriquecimento de Gene Set Analysis de dados de expressao vindos da função topTable do pacote limma.  
+  Realiza enriquecimento de Gene Set Analysis de dados de expressao. São aceitos resutados obtidos por DESeq2 (results(DESeq(dds))) ou limma (topTable(fit2)).
   A função recebe a lista de genes com valor de expressão e gera o rank de genes para utilização no GSEA.  
   Pode ser escolhido realizar GSEA tradicional com uma das bases disponíveis (Hallmark, KEGG, Reactome ou Wiki Pathways), ou manter mais de uma para utilização de todos os termos em uma única análise
     
