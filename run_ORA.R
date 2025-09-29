@@ -40,11 +40,43 @@ run_ORA <- function(res,
                        organismKEGG = 'hsa', organismWP = 'Homo sapiens',
                        ont = 'all') {
   
+  #Converter nomes de colunas de resultados vindos de DESEq para manter padrao igual ao limma
   if (class(res) == 'DESeqResults') {
     res <- as.data.frame(res)
     res$SYMBOL <- rownames(res) 
-    res <- dplyr::rename(res, logFC = log2FoldChange, adj.P.Val = padj)
+    
+    #Renomear
+    if ('log2FoldChange' %in% colnames(res)) {
+      res <- dplyr::rename(res, logFC = log2FoldChange)
+    }
+    
+    if ('padj' %in% colnames(res)) {
+      res <- dplyr::rename(res, adj.P.Val = padj)
+    }
+    
   }
+  
+  if (any(colnames(res) %in% c('padj', 'log2FoldChange', 'ENTREZ'))) {
+    res <- as.data.frame(res)
+    
+    #Renomear
+    if ('log2FoldChange' %in% colnames(res)) {
+      res <- dplyr::rename(res, logFC = log2FoldChange)
+    }
+    
+    if ('padj' %in% colnames(res)) {
+      res <- dplyr::rename(res, adj.P.Val = padj)
+    }
+    
+    if ('ENTREZ' %in% colnames(res)) {
+      res <- dplyr::rename(res, ENTREZ = ENTREZID)
+    }
+    
+  } 
+  
+    
+  }
+  
   
   #Separar os resultados em Up e Down
   #Genes Up
