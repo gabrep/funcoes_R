@@ -13,7 +13,7 @@
 color_dend <- function(exp, grupos, cores_dend) {
   
   #cores genericas para o dendograma
-  cores_dend <- c('firebrick1', 'deepskyblue2', 'gold', 'chocolate', 'green')
+  cores_dend <- c('firebrick1', 'deepskyblue2', 'gold', 'violetred', 'purple', 'chocolate', 'green', 'black')
   
   #conferir grupos presentes nos metadados
   grupos_unicos <- unique(grupos)
