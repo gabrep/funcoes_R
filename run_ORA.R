@@ -72,10 +72,10 @@ run_ORA <- function(res,
       res <- dplyr::rename(res, ENTREZ = ENTREZID)
     }
     
-  } 
+  }
   
     
-  }
+
   
   
   #Separar os resultados em Up e Down
@@ -171,5 +171,4 @@ run_ORA <- function(res,
     results$wp_down <- wikipathways_down
   }
   return(results)
-  
 }
