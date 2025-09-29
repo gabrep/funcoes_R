@@ -11,7 +11,8 @@
 
 
 
-run_GSEA <- function(res, #dataframe de resultado de DEGs extraído com limma::topTable
+run_GSEA <- function(res, #dataframe de resultado de DEGs
+                     org = 'Homo sapiens',
                      genes = 'SYMBOL', #coluna dos resultados que traz o identificador dos genes
                      bases = c('HALLMARK', 'KEGG', 'REACTOME', 'WIKIPATHWAYS') #selecionar as bases a se utilizar para rodar o GSEA
 ){
@@ -30,21 +31,46 @@ run_GSEA <- function(res, #dataframe de resultado de DEGs extraído com limma::t
    
   }
   
+  if (any(colnames(res) %in% c('padj', 'log2FoldChange', 'ENTREZ'))) {
+    res <- as.data.frame(res)
+    
+    #Renomear
+    if ('log2FoldChange' %in% colnames(res)) {
+      res <- dplyr::rename(res, logFC = log2FoldChange)
+    }
+    
+    if ('padj' %in% colnames(res)) {
+      res <- dplyr::rename(res, adj.P.Val = padj)
+    }
+    
+    if ('ENTREZ' %in% colnames(res)) {
+      res <- dplyr::rename(res, ENTREZ = ENTREZID)
+    }
+    
+  } 
   
   ##Download das informações para enriquecimento, de acordo com as bases selecionadas
   
   CPs <- NULL
-  for (i in seq_along(bases)) {
-    #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
-    if (bases[i] == 'HALLMARK') { 
-      H <- msigdbr::msigdbr(species = "Homo sapiens", category = "H")
-      CPs[[bases[i]]] <- H
-      } else {
-        ## kegg, reactome e wikipathways sao subcategorias dentro da categoria C2.
-          # para acessar as subcategorias é preciso o prefixo 'CP:' antes do nome da subcategoria
-        subcat <- paste0('CP:', bases[i])
-        CPs[[bases[i]]] <- msigdbr::msigdbr(species = "Homo sapiens", category = "C2", subcategory = subcat)
-      }
+  
+  if (org == 'Homo sapiens') {
+    
+    for (i in seq_along(bases)) {
+      #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
+      if (bases[i] == 'HALLMARK') { 
+        H <- msigdbr::msigdbr(species = org, category = "H")
+        CPs[[bases[i]]] <- H
+        } else {
+          ## kegg, reactome e wikipathways sao subcategorias dentro da categoria C2.
+            # para acessar as subcategorias é preciso o prefixo 'CP:' antes do nome da subcategoria
+          subcat <- paste0('CP:', bases[i])
+          CPs[[bases[i]]] <- msigdbr::msigdbr(species = org, category = "C2", subcategory = subcat)
+        }
+    }
+  }
+  
+  if (org == 'Mus musculus') {
+    CPs <- msigdbr::msigdbr(species = 'Mus musculus', category = "C2", subcategory = 'CP')
   }
     CPs_db <- dplyr::bind_rows(CPs)
     CPs_db <- dplyr::select(CPs_db, gs_name, gene_symbol)
