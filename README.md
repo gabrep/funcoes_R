@@ -39,6 +39,7 @@ Este repositório contém scripts de funções criadas para uso pessoal ou em m�
   Pode ser escolhido realizar GSEA tradicional com uma das bases disponíveis (Hallmark, KEGG, Reactome ou Wiki Pathways), ou manter mais de uma para utilização de todos os termos em uma única análise
     
      
-- **color_dend**: color_dend(exp, grupos, cores_dend)    
+- **color_dend**: color_dend(exp, grupos, cores_dend, col_branches)    
   Gera dendograma de distancias euclidianas com personalização de cores para cada grupo.  
+  col_branches deve ser utilizado como T/F para colorir os ramos do dendrograma (mesmas cores de cores_dend)
 
