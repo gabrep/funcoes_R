@@ -16,6 +16,7 @@ run_GSEA <- function(res, #dataframe de resultado de DEGs
                      genes = 'SYMBOL', #coluna dos resultados que traz o identificador dos genes
                      bases = c('HALLMARK', 'KEGG', 'REACTOME', 'WIKIPATHWAYS') #selecionar as bases a se utilizar para rodar o GSEA
 ){
+  require(clusterProfiler); require(msigdbr)
   #Converter nomes de colunas de resultados vindos de DESEq para manter padrao igual ao limma
   if (class(res) == 'DESeqResults') {
     res <- as.data.frame(res)
@@ -71,6 +72,21 @@ run_GSEA <- function(res, #dataframe de resultado de DEGs
   
   if (org == 'Mus musculus') {
     CPs <- msigdbr::msigdbr(species = 'Mus musculus', category = "C2", subcategory = 'CP')
+  }
+  
+  if (org == 'Rattus norvegicus') {
+    for (i in seq_along(bases)) {
+      #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
+      if (bases[i] == 'HALLMARK') { 
+        H <- msigdbr::msigdbr(species = org, category = "H")
+        CPs[[bases[i]]] <- H
+      } else {
+        ## kegg, reactome e wikipathways sao subcategorias dentro da categoria C2.
+        # para acessar as subcategorias é preciso o prefixo 'CP:' antes do nome da subcategoria
+        subcat <- paste0('CP:', bases[i])
+        CPs[[bases[i]]] <- msigdbr::msigdbr(species = org, category = "C2", subcategory = subcat)
+      }
+    }
   }
     CPs_db <- dplyr::bind_rows(CPs)
     CPs_db <- dplyr::select(CPs_db, gs_name, gene_symbol)
