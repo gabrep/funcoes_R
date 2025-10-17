@@ -10,8 +10,10 @@
   ##cores_dend = personalizar cores
 
 
-color_dend <- function(exp, grupos, cores_dend) {
+color_dend <- function(exp, grupos, cores_dend, col_branches) {
   
+  
+  require(dendextend)
   #cores genericas para o dendograma
   cores_dend <- c('firebrick1', 'deepskyblue2', 'gold', 'violetred', 'purple', 'chocolate', 'green', 'black')
   
@@ -33,8 +35,11 @@ color_dend <- function(exp, grupos, cores_dend) {
   for (i in seq_along(grupos_unicos)) {
     dend <- dend %>% color_labels(labels = colnames(exp[, which(grupos == grupos_unicos[i])]),
     col = cores_dend[i])
+      
   }
-  
+  if (col_branches == TRUE) {
+  dend <- color_branches(dend, k=length(grupos_unicos), col = cores_dend)
+  }
   plot(dend)
   
   #legenda
