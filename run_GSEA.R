@@ -14,7 +14,7 @@
 run_GSEA <- function(res, #dataframe de resultado de DEGs
                      org = 'Homo sapiens',
                      genes = 'SYMBOL', #coluna dos resultados que traz o identificador dos genes
-                     bases = c('HALLMARK', 'KEGG', 'REACTOME', 'WIKIPATHWAYS') #selecionar as bases a se utilizar para rodar o GSEA
+                     bases = c('HALLMARK', 'KEGG_MEDICUS', 'REACTOME', 'WIKIPATHWAYS', 'BIOCARTA') #selecionar as bases a se utilizar para rodar o GSEA
 ){
   require(clusterProfiler); require(msigdbr)
   #Converter nomes de colunas de resultados vindos de DESEq para manter padrao igual ao limma
@@ -55,7 +55,7 @@ run_GSEA <- function(res, #dataframe de resultado de DEGs
   CPs <- NULL
   
   if (org == 'Homo sapiens') {
-    
+    message('Running GSEA for Homo sapiens genes...')
     for (i in seq_along(bases)) {
       #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
       if (bases[i] == 'HALLMARK') { 
@@ -71,10 +71,29 @@ run_GSEA <- function(res, #dataframe de resultado de DEGs
   }
   
   if (org == 'Mus musculus') {
-    CPs <- msigdbr::msigdbr(species = 'Mus musculus', category = "C2", subcategory = 'CP')
+    
+    for (i in seq_along(bases)) {
+      
+      #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
+      if (bases[i] == 'HALLMARK') { 
+        H <- msigdbr::msigdbr(species = org, category = "H")
+        CPs[[bases[i]]] <- H
+        
+      } else {
+        ## kegg, reactome e wikipathways sao subcategorias dentro da categoria C2.
+        # para acessar as subcategorias é preciso o prefixo 'CP:' antes do nome da subcategoria
+        subcat <- paste0('CP:', bases[i])
+        CPs[[bases[i]]] <- msigdbr::msigdbr(species = org, category = "C2", subcategory = subcat)
+      }
+    
+    }
   }
   
+  message('Running GSEA for Mus musculus genes...')
+  
+  
   if (org == 'Rattus norvegicus') {
+    message('Running GSEA for Rattus norvegicus genes...')
     for (i in seq_along(bases)) {
       #HALLMARKS sao uma subcategoria separada, nao pertencem a categoria C2 do msigdb
       if (bases[i] == 'HALLMARK') { 
